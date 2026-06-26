@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Observability &amp; Event Watchdog</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --bg:#0f1419; --panel:#1a2129; --line:#2a333d; --text:#e6edf3; --muted:#8b98a5;
+            --ok:#3fb950; --warn:#d29922; --crit:#f85149; --accent:#58a6ff; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+           background:var(--bg); color:var(--text); }
+    header { padding:20px 28px; border-bottom:1px solid var(--line); display:flex;
+             align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+    h1 { font-size:18px; margin:0; font-weight:600; }
+    h1 small { color:var(--muted); font-weight:400; }
+    main { padding:24px 28px; max-width:1200px; margin:0 auto; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:14px; margin-bottom:24px; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+    .card .label { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+    .card .value { font-size:26px; font-weight:600; margin-top:6px; }
+    .status-pill { display:inline-block; padding:4px 12px; border-radius:999px; font-weight:600; font-size:13px; }
+    .s-healthy { background:rgba(63,185,80,.15); color:var(--ok); }
+    .s-degraded { background:rgba(210,153,34,.15); color:var(--warn); }
+    .s-critical { background:rgba(248,81,73,.15); color:var(--crit); }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px; margin-bottom:24px; }
+    .panel h2 { font-size:15px; margin:0 0 14px; }
+    .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+    button { background:var(--accent); color:#08111f; border:0; border-radius:7px; padding:8px 14px;
+             font-weight:600; cursor:pointer; }
+    button.ghost { background:transparent; color:var(--accent); border:1px solid var(--line); }
+    button:disabled { opacity:.5; cursor:default; }
+    input[type=file] { color:var(--muted); }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th,td { text-align:left; padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+    th { color:var(--muted); font-weight:600; text-transform:uppercase; font-size:11px; letter-spacing:.04em; }
+    .sev { padding:2px 9px; border-radius:999px; font-size:12px; font-weight:600; }
+    .sev-low{background:rgba(139,152,165,.2);color:var(--muted);} .sev-medium{background:rgba(210,153,34,.18);color:var(--warn);}
+    .sev-high{background:rgba(248,81,73,.16);color:var(--crit);} .sev-critical{background:var(--crit);color:#fff;}
+    .muted { color:var(--muted); }
+    .analysis { background:#10171f; border:1px solid var(--line); border-radius:8px; padding:12px; margin-top:8px; font-size:13px; }
+    .analysis h4 { margin:0 0 4px; font-size:12px; color:var(--accent); text-transform:uppercase; letter-spacing:.03em; }
+    .analysis ul { margin:4px 0 0; padding-left:18px; }
+    .tag { font-size:11px; color:var(--muted); }
+    .empty { color:var(--muted); padding:14px 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛰️ Observability &amp; Event Watchdog <small>— SRE log-anomaly engine</small></h1>
+    <div class="controls">
+      <input type="file" id="logfile" accept=".log,.txt,.json,.jsonl" />
+      <button id="ingestBtn">Ingest logs</button>
+      <button class="ghost" id="refreshBtn">Refresh</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="cards" id="cards"></div>
+
+    <div class="panel">
+      <h2>Error-rate trend</h2>
+      <canvas id="chart" height="90"></canvas>
+    </div>
+
+    <div class="panel">
+      <h2>Detected anomalies</h2>
+      <div id="anomalies"><div class="empty">No anomalies yet — ingest a log file to begin.</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>Alerts fired</h2>
+      <div id="alerts"><div class="empty">No alerts yet.</div></div>
+    </div>
+  </main>
+
+  <script>
+    let chart;
+    const $ = (id) => document.getElementById(id);
+
+    async function api(path, opts) {
+      const r = await fetch(path, opts);
+      if (!r.ok) throw new Error((await r.json()).detail || r.statusText);
+      return r.json();
+    }
+
+    async function ingest() {
+      const f = $('logfile').files[0];
+      if (!f) { alert('Choose a .log/.json file first.'); return; }
+      const fd = new FormData();
+      fd.append('file', f);
+      $('ingestBtn').disabled = true;
+      try {
+        const s = await api('/api/ingest', { method:'POST', body: fd });
+        alert(`Ingested ${s.parsed_lines} lines · ${s.error_lines} errors · ` +
+              `${s.anomaly_count} anomalies · ${s.alerts_fired} alerts fired`);
+        await refresh();
+      } catch (e) { alert('Ingest failed: ' + e.message); }
+      finally { $('ingestBtn').disabled = false; }
+    }
+
+    function statusPill(s) { return `<span class="status-pill s-${s}">${s.toUpperCase()}</span>`; }
+
+    async function loadHealth() {
+      const h = await api('/api/health-summary');
+      $('cards').innerHTML = [
+        ['Health', statusPill(h.status)],
+        ['Events', h.total_events],
+        ['Errors', h.error_events],
+        ['Error rate', (h.error_rate*100).toFixed(1)+'%'],
+        ['Anomalies', h.open_anomalies],
+        ['Alerts', h.alerts_fired],
+      ].map(([l,v]) => `<div class="card"><div class="label">${l}</div><div class="value">${v}</div></div>`).join('');
+    }
+
+    async function loadChart() {
+      const pts = await api('/api/timeseries');
+      const labels = pts.map(p => new Date(p.ts).toLocaleTimeString());
+      const total = pts.map(p => p.total), errors = pts.map(p => p.errors);
+      const data = {
+        labels,
+        datasets: [
+          { label:'Total events', data:total, borderColor:'#58a6ff', backgroundColor:'rgba(88,166,255,.1)', tension:.25, fill:true },
+          { label:'Errors', data:errors, borderColor:'#f85149', backgroundColor:'rgba(248,81,73,.12)', tension:.25, fill:true },
+        ],
+      };
+      const opts = { responsive:true, plugins:{legend:{labels:{color:'#e6edf3'}}},
+                     scales:{ x:{ticks:{color:'#8b98a5'},grid:{color:'#2a333d'}},
+                              y:{ticks:{color:'#8b98a5'},grid:{color:'#2a333d'},beginAtZero:true}} };
+      if (chart) { chart.data = data; chart.update(); }
+      else chart = new Chart($('chart'), { type:'line', data, options:opts });
+    }
+
+    async function analyze(id, btn) {
+      btn.disabled = true; btn.textContent = 'Analyzing…';
+      try { await api(`/api/anomalies/${id}/analyze`, { method:'POST' }); await loadAnomalies(); }
+      catch (e) { alert('Analyze failed: ' + e.message); btn.disabled = false; btn.textContent = 'Analyze'; }
+    }
+
+    function renderAnalysis(a) {
+      if (!a) return '';
+      const acts = (a.recommended_actions||[]).map(x => `<li>${x}</li>`).join('');
+      return `<div class="analysis">
+        <h4>Incident summary <span class="tag">via ${a.source||'?'} · confidence: ${a.confidence||'n/a'}</span></h4>
+        <div>${a.summary||''}</div>
+        <h4 style="margin-top:10px">Probable root cause</h4>
+        <div>${a.probable_root_cause||''}</div>
+        <h4 style="margin-top:10px">Recommended actions</h4><ul>${acts}</ul></div>`;
+    }
+
+    async function loadAnomalies() {
+      const rows = await api('/api/anomalies');
+      if (!rows.length) { $('anomalies').innerHTML = '<div class="empty">No anomalies detected.</div>'; return; }
+      $('anomalies').innerHTML = `<table><thead><tr>
+          <th>Window (UTC)</th><th>Errors</th><th>Baseline</th><th>Z-score</th><th>Severity</th><th></th>
+        </tr></thead><tbody>` + rows.map(r => `
+          <tr>
+            <td>${new Date(r.bucket_ts).toISOString().replace('T',' ').slice(0,19)}</td>
+            <td>${r.error_count} <span class="muted">/ ${r.total_count}</span></td>
+            <td class="muted">μ=${r.baseline_mean} σ=${r.baseline_std}</td>
+            <td>${r.zscore}</td>
+            <td><span class="sev sev-${r.severity}">${r.severity}</span></td>
+            <td>${r.analyzed ? '' : `<button class="ghost" onclick="analyze(${r.id}, this)">Analyze</button>`}</td>
+          </tr>
+          ${r.analyzed ? `<tr><td colspan="6">${renderAnalysis(r.analysis)}</td></tr>` : ''}
+        `).join('') + '</tbody></table>';
+    }
+
+    async function loadAlerts() {
+      const rows = await api('/api/alerts');
+      if (!rows.length) { $('alerts').innerHTML = '<div class="empty">No alerts fired.</div>'; return; }
+      $('alerts').innerHTML = `<table><thead><tr>
+          <th>When</th><th>Anomaly</th><th>Target</th><th>Delivery</th></tr></thead><tbody>` +
+        rows.map(r => `<tr>
+            <td>${new Date(r.created_at).toLocaleTimeString()}</td>
+            <td>#${r.anomaly_id} · ${r.payload.severity}</td>
+            <td class="muted">${r.webhook_url || '(simulated sink)'}</td>
+            <td>${r.simulated ? '🟡 simulated' : (r.ok ? '🟢 '+r.status_code : '🔴 failed')}</td>
+          </tr>`).join('') + '</tbody></table>';
+    }
+
+    async function refresh() {
+      await Promise.all([loadHealth(), loadChart(), loadAnomalies(), loadAlerts()]);
+    }
+
+    $('ingestBtn').onclick = ingest;
+    $('refreshBtn').onclick = refresh;
+    refresh();
+  </script>
+</body>
+</html>

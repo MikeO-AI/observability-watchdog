@@ -1,0 +1,124 @@
+2026-06-26T10:00:02Z INFO service=checkout msg="healthcheck ok"
+2026-06-26T10:00:03Z INFO service=catalog msg="order placed" order_id=5662
+2026-06-26T10:00:03Z INFO service=auth msg="cache hit" key=user:profile
+2026-06-26T10:00:05Z INFO service=payments msg="cache hit" key=user:profile
+2026-06-26T10:00:06Z INFO service=catalog msg="cache hit" key=user:profile
+2026-06-26T10:00:06Z INFO service=gateway msg="cache hit" key=user:profile
+2026-06-26T10:00:06Z INFO service=gateway msg="request completed" status=200 path=/api/cart
+2026-06-26T10:00:09Z INFO service=payments msg="request completed" status=200 path=/api/cart
+2026-06-26T10:00:10Z INFO service=catalog msg="order placed" order_id=7909
+2026-06-26T10:00:14Z INFO service=gateway msg="order placed" order_id=1812
+2026-06-26T10:00:14Z INFO service=checkout msg="cache hit" key=user:profile
+2026-06-26T10:00:25Z INFO service=payments msg="order placed" order_id=2320
+2026-06-26T10:00:26Z INFO service=auth msg="healthcheck ok"
+2026-06-26T10:00:29Z INFO service=catalog msg="request completed" status=200 path=/api/cart
+2026-06-26T10:00:31Z INFO service=gateway msg="healthcheck ok"
+2026-06-26T10:00:33Z INFO service=payments msg="order placed" order_id=5717
+2026-06-26T10:00:35Z WARN service=payments msg="slow query" duration_ms=812
+2026-06-26T10:00:37Z INFO service=payments msg="cache hit" key=user:profile
+2026-06-26T10:00:38Z WARN service=checkout msg="retrying upstream" attempt=2
+2026-06-26T10:00:44Z WARN service=auth msg="retrying upstream" attempt=2
+2026-06-26T10:00:44Z INFO service=catalog msg="order placed" order_id=2126
+2026-06-26T10:00:45Z INFO service=payments msg="healthcheck ok"
+2026-06-26T10:00:53Z INFO service=checkout msg="order placed" order_id=2064
+2026-06-26T10:01:04Z INFO service=auth msg="request completed" status=200 path=/api/cart
+2026-06-26T10:01:06Z INFO service=payments msg="request completed" status=200 path=/api/cart
+2026-06-26T10:01:09Z INFO service=payments msg="healthcheck ok"
+2026-06-26T10:01:11Z INFO service=auth msg="cache hit" key=user:profile
+2026-06-26T10:01:22Z INFO service=gateway msg="request completed" status=200 path=/api/cart
+2026-06-26T10:01:28Z INFO service=payments msg="cache hit" key=user:profile
+2026-06-26T10:01:30Z WARN service=catalog msg="slow query" duration_ms=812
+2026-06-26T10:01:31Z INFO service=gateway msg="healthcheck ok"
+2026-06-26T10:01:33Z INFO service=checkout msg="healthcheck ok"
+2026-06-26T10:01:34Z INFO service=checkout msg="request completed" status=200 path=/api/cart
+2026-06-26T10:01:38Z WARN service=checkout msg="slow query" duration_ms=812
+2026-06-26T10:01:43Z INFO service=payments msg="cache hit" key=user:profile
+2026-06-26T10:01:44Z INFO service=gateway msg="request completed" status=200 path=/api/cart
+2026-06-26T10:01:44Z INFO service=gateway msg="healthcheck ok"
+2026-06-26T10:01:44Z INFO service=catalog msg="cache hit" key=user:profile
+2026-06-26T10:01:47Z INFO service=catalog msg="order placed" order_id=3645
+2026-06-26T10:01:54Z INFO service=payments msg="order placed" order_id=8870
+2026-06-26T10:01:55Z INFO service=gateway msg="order placed" order_id=6878
+2026-06-26T10:01:55Z INFO service=auth msg="cache hit" key=user:profile
+2026-06-26T10:01:57Z INFO service=gateway msg="order placed" order_id=7457
+2026-06-26T10:02:08Z INFO service=gateway msg="request completed" status=200 path=/api/cart
+2026-06-26T10:02:09Z INFO service=gateway msg="request completed" status=200 path=/api/cart
+2026-06-26T10:02:10Z ERROR service=auth msg="connection pool exhausted" pool=payments active=50 max=50
+2026-06-26T10:02:12Z INFO service=gateway msg="request completed" status=200 path=/api/cart
+2026-06-26T10:02:13Z INFO service=payments msg="request completed" status=200 path=/api/cart
+2026-06-26T10:02:14Z INFO service=checkout msg="cache hit" key=user:profile
+2026-06-26T10:02:16Z INFO service=auth msg="cache hit" key=user:profile
+2026-06-26T10:02:16Z INFO service=gateway msg="cache hit" key=user:profile
+2026-06-26T10:02:28Z INFO service=catalog msg="healthcheck ok"
+2026-06-26T10:02:34Z INFO service=gateway msg="healthcheck ok"
+2026-06-26T10:02:39Z INFO service=auth msg="order placed" order_id=4714
+2026-06-26T10:02:49Z INFO service=auth msg="cache hit" key=user:profile
+2026-06-26T10:02:50Z INFO service=catalog msg="cache hit" key=user:profile
+2026-06-26T10:02:51Z INFO service=payments msg="request completed" status=200 path=/api/cart
+2026-06-26T10:02:51Z INFO service=auth msg="order placed" order_id=6741
+2026-06-26T10:02:51Z INFO service=checkout msg="cache hit" key=user:profile
+2026-06-26T10:02:55Z INFO service=auth msg="cache hit" key=user:profile
+2026-06-26T10:02:56Z INFO service=auth msg="healthcheck ok"
+2026-06-26T10:02:58Z INFO service=catalog msg="request completed" status=200 path=/api/cart
+2026-06-26T10:02:58Z INFO service=payments msg="cache hit" key=user:profile
+2026-06-26T10:02:58Z INFO service=catalog msg="order placed" order_id=9219
+2026-06-26T10:03:01Z INFO service=catalog msg="order placed" order_id=1296
+2026-06-26T10:03:04Z INFO service=checkout msg="cache hit" key=user:profile
+2026-06-26T10:03:05Z INFO service=catalog msg="cache hit" key=user:profile
+2026-06-26T10:03:15Z INFO service=gateway msg="healthcheck ok"
+2026-06-26T10:03:16Z INFO service=auth msg="cache hit" key=user:profile
+2026-06-26T10:03:17Z INFO service=checkout msg="order placed" order_id=1456
+2026-06-26T10:03:24Z INFO service=catalog msg="healthcheck ok"
+2026-06-26T10:03:25Z INFO service=payments msg="cache hit" key=user:profile
+2026-06-26T10:03:26Z INFO service=auth msg="request completed" status=200 path=/api/cart
+2026-06-26T10:03:27Z INFO service=checkout msg="healthcheck ok"
+2026-06-26T10:03:28Z INFO service=gateway msg="order placed" order_id=9319
+2026-06-26T10:03:28Z WARN service=catalog msg="slow query" duration_ms=812
+2026-06-26T10:03:30Z INFO service=gateway msg="request completed" status=200 path=/api/cart
+2026-06-26T10:03:43Z INFO service=gateway msg="order placed" order_id=2738
+2026-06-26T10:03:45Z INFO service=payments msg="order placed" order_id=6556
+2026-06-26T10:03:48Z INFO service=checkout msg="cache hit" key=user:profile
+2026-06-26T10:03:48Z INFO service=auth msg="healthcheck ok"
+2026-06-26T10:03:53Z INFO service=payments msg="request completed" status=200 path=/api/cart
+2026-06-26T10:03:56Z WARN service=gateway msg="slow query" duration_ms=812
+2026-06-26T10:03:57Z INFO service=auth msg="healthcheck ok"
+2026-06-26T10:04:00Z ERROR service=payments msg="timeout waiting for upstream" upstream=payments-db timeout_ms=5000
+2026-06-26T10:04:04Z INFO service=catalog msg="order placed" order_id=1189
+2026-06-26T10:04:05Z ERROR service=payments msg="timeout waiting for upstream" upstream=payments-db timeout_ms=5000
+2026-06-26T10:04:05Z INFO service=payments msg="healthcheck ok"
+2026-06-26T10:04:06Z ERROR service=payments msg="connection pool exhausted" pool=payments active=50 max=50
+2026-06-26T10:04:07Z ERROR service=payments msg="timeout waiting for upstream" upstream=payments-db timeout_ms=5000
+2026-06-26T10:04:12Z ERROR service=payments msg="timeout waiting for upstream" upstream=payments-db timeout_ms=5000
+2026-06-26T10:04:17Z INFO service=catalog msg="healthcheck ok"
+2026-06-26T10:04:18Z ERROR service=payments msg="timeout waiting for upstream" upstream=payments-db timeout_ms=5000
+2026-06-26T10:04:21Z ERROR service=payments msg="500 from dependency" dependency=payments-db
+2026-06-26T10:04:21Z INFO service=auth msg="cache hit" key=user:profile
+2026-06-26T10:04:22Z INFO service=checkout msg="request completed" status=200 path=/api/cart
+2026-06-26T10:04:27Z ERROR service=payments msg="connection refused" upstream=payments-db host=10.0.4.7:5432
+2026-06-26T10:04:32Z ERROR service=payments msg="connection pool exhausted" pool=payments active=50 max=50
+2026-06-26T10:04:32Z ERROR service=payments msg="timeout waiting for upstream" upstream=payments-db timeout_ms=5000
+2026-06-26T10:04:34Z ERROR service=payments msg="500 from dependency" dependency=payments-db
+2026-06-26T10:04:39Z ERROR service=payments msg="timeout waiting for upstream" upstream=payments-db timeout_ms=5000
+2026-06-26T10:04:40Z INFO service=checkout msg="request completed" status=200 path=/api/cart
+2026-06-26T10:04:40Z ERROR service=payments msg="connection refused" upstream=payments-db host=10.0.4.7:5432
+2026-06-26T10:04:44Z ERROR service=payments msg="timeout waiting for upstream" upstream=payments-db timeout_ms=5000
+2026-06-26T10:05:00Z INFO service=payments msg="request completed" status=200 path=/api/cart
+2026-06-26T10:05:04Z INFO service=payments msg="request completed" status=200 path=/api/cart
+2026-06-26T10:05:05Z INFO service=payments msg="cache hit" key=user:profile
+2026-06-26T10:05:05Z WARN service=checkout msg="retrying upstream" attempt=2
+2026-06-26T10:05:06Z INFO service=payments msg="request completed" status=200 path=/api/cart
+2026-06-26T10:05:09Z INFO service=payments msg="order placed" order_id=1368
+2026-06-26T10:05:13Z INFO service=catalog msg="healthcheck ok"
+2026-06-26T10:05:15Z INFO service=auth msg="order placed" order_id=9092
+2026-06-26T10:05:17Z ERROR service=payments msg="500 from dependency" dependency=payments-db
+2026-06-26T10:05:19Z INFO service=catalog msg="request completed" status=200 path=/api/cart
+2026-06-26T10:05:21Z INFO service=gateway msg="request completed" status=200 path=/api/cart
+2026-06-26T10:05:32Z WARN service=checkout msg="slow query" duration_ms=812
+2026-06-26T10:05:38Z INFO service=auth msg="healthcheck ok"
+2026-06-26T10:05:40Z INFO service=gateway msg="order placed" order_id=5321
+2026-06-26T10:05:46Z INFO service=payments msg="cache hit" key=user:profile
+2026-06-26T10:05:48Z INFO service=gateway msg="request completed" status=200 path=/api/cart
+2026-06-26T10:05:49Z INFO service=checkout msg="cache hit" key=user:profile
+2026-06-26T10:05:52Z INFO service=gateway msg="cache hit" key=user:profile
+2026-06-26T10:05:54Z INFO service=auth msg="order placed" order_id=6343
+2026-06-26T10:05:54Z WARN service=payments msg="retrying upstream" attempt=2
