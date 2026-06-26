@@ -14,3 +14,18 @@ env/
 .DS_Store
 .idea/
 .vscode/
+
+# Challenge & personal materials — never publish these to the public repo.
+# (They already live OUTSIDE this repo; this is defense-in-depth in case a copy
+#  is ever dropped into the project folder. Note: .md and sample_data/*.log are
+#  intentionally NOT ignored — they're part of the deliverable.)
+*.pdf
+*.docx
+*.doc
+*.pptx
+*.xlsx
+tagle*.png
+*-challenge*
+Interview-notes/
+private/
+_local/
