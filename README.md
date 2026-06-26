@@ -6,7 +6,7 @@ alerts** when thresholds are breached, **visualizes health trends** in a dashboa
 uses **Claude (`claude-opus-4-8`)** to turn each incident into a plain-English summary and
 probable root cause.
 
-> Built for the **2026 New Hire "Vibe Coding" Challenge — Project 3 (Site Reliability)**.
+> Built for the **2026 "Vibe Coding" Challenge — Project 3 (Site Reliability)**.
 > The entire codebase was written by an AI agent (Claude Code) under human architectural
 > direction — see [`prompts.md`](./prompts.md).
 
